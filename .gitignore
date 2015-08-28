@@ -1,2 +1,4 @@
-# Directorio lib
-lib/
+# Archivos temporales de Emacs
+**/*~
+
+**/#*#

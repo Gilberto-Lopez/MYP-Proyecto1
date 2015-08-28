@@ -2,8 +2,15 @@ package myp.proyecto1;
 
 import mx.unam.ciencias.edd.Lista;
 
+/**
+ * Clase para obtener tokens (fichas) a partir de un String donde cada token es
+ * una 
+ */
 public class Tokens{
-    
+
+    /**
+     *
+     */
     public Lista<String> obtenerTokens(String cadena){
 	char[] caracteres = cadena.replaceAll(" ","").toCharArray();
 	Lista<String> lista = new Lista<>();
