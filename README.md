@@ -1,7 +1,7 @@
 # MYP-Proyecto1
 Modelado y Programación, Proyecto 1
 
-Descipción del proyecto:
+<strong>Descipción del proyecto:</strong>
 
 Deben modelar, diseñar e implementar un programa que grafique funciones dadas por las operaciones de suma, resta, multiplicación, división y exponenciación, junto con las funciones trigonométricas seno, coseno, tangente, cotangente, secante y cosecante, además de la función raíz cuadrado.
 
@@ -9,7 +9,7 @@ El programa debe funcionar con una una interfaz gráfica de usuario, donde sea p
 
 Además de las reglas de todos los proyectos en el curso, su programa debe cumplir lo siguiente:
 
-Seguir buenas prácticas de programación; además de pruebas unitarias, se debe documentar el código, y seguir patrones de diseño. En el caso particular de este proyecto, se debe seguir el patrón MVC.
+Seguir buenas prácticas de programación; además de pruebas unitarias, se debe documentar el código, y seguir patrones de diseño. En el caso particular de este proyecto, se debe seguir el patrón <i>MVC</i>.
 
 El analizar una función debe tomar a lo más <i>O(n)</i>, donde n es el número de caracteres en la cadena.
 
@@ -33,7 +33,7 @@ Punto extra si el programa está escrito en el lenguaje de programación Vala.
 
 Punto extra si utilizan el sistema de control de versiones Git, y su código está disponible en GitHub. Esto sólo será válido si se puede ir revisando la historia de su proyecto; si nada más avientan el código en GitHub al haberlo terminado de escribir, esto no contará.
 
-Gramática prefija
+<strong>Gramática prefija</strong>
 
 La gramática para notación prefija, expresada en la Forma Normal de Backus es la siguiente:
 
@@ -61,7 +61,7 @@ La gramática para notación prefija, expresada en la Forma Normal de Backus es 
 
 < operador > ::= "+" | "-" | "*" | "/" | "^"
     
-Gramática infija
+<strong>Gramática infija</strong>
 
 La gramática para notación infija, expresada en la Forma Normal de Backus es la siguiente:
 
