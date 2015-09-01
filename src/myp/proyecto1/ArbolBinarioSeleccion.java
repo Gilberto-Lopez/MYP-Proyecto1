@@ -1,8 +1,9 @@
 package myp.proyecto1;
 
 import mx.unam.ciencias.edd.ArbolBinario;
-import mx.uanm.ciencias.edd.Pila;
+import mx.unam.ciencias.edd.Pila;
 import mx.unam.ciencias.edd.Cola;
+import mx.unam.ciencias.edd.VerticeArbolBinario;
 import java.util.Iterator;
 
 /**
@@ -63,6 +64,15 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
     }
 
     /**
+     * Constructor que crea un nuevo árbol con una raíz.
+     * @param elemento El elemento a colocar en la raiz del árbol.
+     */
+    public ArbolBinarioSeleccion(T elemento){
+	raiz = ultimoAgregado = nuevoVertice(elemento);
+	elementos = 1;
+    }
+
+    /**
      * Agrega un elemento al árbol.
      * @deprecated Su uso debe ser evitado pues el método no permite agregar
      *             elementos por selección, restando libertad al usuario en el
@@ -114,7 +124,7 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	if(v.izquierdo != null)
 	    return false;
 	ultimoAgregado = v.izquierdo = nuevoVertice(elemento);
-	v.izquerdo.padre = v.izquierdo;
+	v.izquierdo.padre = v.izquierdo;
 	elementos++;
 	return true;
     }
@@ -148,18 +158,8 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
      * @param elemento El elemento a eliminar.
      */
     @Override public void elimina(T elemento){
-	Vertice tmp;
-	Cola<Vertice> cola = new Cola<>();
-	cola.mete(raiz);
-	while(!cola.esVacia()){
-	    tmp = cola.saca();
-	    if(elemento.equals(tmp.elemento)){
-		elimina(tmp);
-		return;
-	    }
-	    cola.mete(tmp.izquierdo);
-	    cola.mete(tmp.derecho);
-	}
+	Vertice tmp = vertice(busca(elemento));
+	elimina(tmp);
     }
 
     /* Método auxiliar para elimina(). */
@@ -170,7 +170,7 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	    raiz = ultimoAgregado = null;
 	    elementos = 0;
 	}else{
-	    int elems = cuentaElementos(vertice);
+	    int elems = contarElementos(vertice);
 	    if(esIzquierdo(vertice))
 		vertice.padre.izquierdo = null;
 	    else
@@ -278,14 +278,17 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
     }
 
     /**
-     * Cuenta la cantidad de elementos de un subárbol.
+     * Cuenta la cantidad de elementos de un subárbol, incluyendo la raíz de
+     * dicho subárbol.
      * @param vertice Vértice a partir del cual contaremos los elementos de su
      *        subárbol.
      * @return El número de elementos en el subárbol.
      */
     public int contarElementos(VerticeArbolBinario<T> vertice){
+	if(vertice == null)
+	    return 0;
 	Vertice v = vertice(vertice);
-	int elementos = 0;
+	int elementos = 1;
 	Cola<Vertice> cola = new Cola<>();
 	cola.mete(v);
 	while(!cola.esVacia()){

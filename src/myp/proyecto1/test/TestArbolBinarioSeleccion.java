@@ -14,7 +14,7 @@ import org.junit.Test;
 /**
  * Clase para pruebas unitarias de la clase {@link ArbolBinarioSeleccion}.
  */
-public class TestArbolBinarioOrdenado {
+public class TestArbolBinarioSeleccion {
 
     private int total;
     private Random random;
@@ -32,35 +32,9 @@ public class TestArbolBinarioOrdenado {
     }
 
     /**
-     * Valida un árbol seleccion. Comprueba que para todo nodo A se
-     * cumpla que si A tiene como hijo izquierdo a B, entonces B ≤
-     * A, y si A tiene como hijo derecho a C, entonces A ≤ C.
-     * @param <T> tipo del que puede ser el árbol binario ordenado.
-     * @param arbol el árbol a revisar.
-     */
-    public static <T extends Comparable<T>> void
-    arbolBinarioOrdenadoValido(ArbolBinarioOrdenado<T> arbol) {
-        if (arbol.getElementos() == 0)
-            return;
-        UtileriasArbolBinario.arbolBinarioValido(arbol);
-        Cola<T> cola = new Cola<T>();
-        try {
-            llenaColaEnOrden(arbol.raiz(), cola);
-        } catch (NoSuchElementException sdee) {
-            Assert.fail();
-        }
-        T a = cola.saca();
-        while (!cola.esVacia()) {
-            T b = cola.saca();
-            Assert.assertTrue(a.compareTo(b) <= 0);
-            a = b;
-        }
-    }
-
-    /**
      * Crea un árbol binario para cada prueba.
      */
-    public TestArbolBinarioOrdenado() {
+    public TestArbolBinarioSeleccion() {
         random = new Random();
         arbol = new ArbolBinarioSeleccion<Integer>();
         total = 3 + random.nextInt(100);
@@ -76,14 +50,14 @@ public class TestArbolBinarioOrdenado {
 	Assert.assertTrue(arbol.getElementos() == 1);
 	VerticeArbolBinario<Integer> r = arbol.raiz();
 	VerticeArbolBinario<Integer> u = arbol.getUltimoVerticeAgregado();
-	Assert.assertTrue(r == u);
+	Assert.assertTrue(u.get() == n);
 	Assert.assertTrue(r.get() == n);
 	VerticeArbolBinario<Integer> b = arbol.busca(n);
 	Assert.assertTrue(b != null);
 	Assert.assertTrue(b.get() == n);
 	int n2 = random.nextInt(100);
-	while(n2 == n1)
-	    n2 = randowm.nextInt(100);
+	while(n2 == n)
+	    n2 = random.nextInt(100);
 	boolean bool2 = arbol.creaRaiz(n2);
 	Assert.assertFalse(bool2);
     }
@@ -92,15 +66,17 @@ public class TestArbolBinarioOrdenado {
      * Prueba unitaria para {@link ArbolBinarioSeleccion#agregaIzquierda}.
      */
     @Test public void testAgregaIzquierda() {
+	arbol.creaRaiz(random.nextInt(1000));
 	VerticeArbolBinario<Integer> tmp = arbol.raiz();
         for (int i = 0; i < total; i++) {
             int n = random.nextInt(100);
-            arbol.agregaIzquierda(n, tmp);
+            boolean bool = arbol.agregaIzquierda(n, tmp);
+	    Assert.assertTrue(bool);
 	    Assert.assertTrue(tmp.hayIzquierdo());
 	    tmp = tmp.getIzquierdo();
             VerticeArbolBinario<Integer> v;
             v = arbol.getUltimoVerticeAgregado();
-            Assert.assertTrue(arbol.getElementos() == i+1);
+            Assert.assertTrue(arbol.getElementos() == i+2);
             VerticeArbolBinario<Integer> it = arbol.busca(n);
             Assert.assertTrue(it != null);
             Assert.assertTrue(it.get() == n);
@@ -112,19 +88,20 @@ public class TestArbolBinarioOrdenado {
      * Prueba unitaria para {@link ArbolBinarioSeleccion#agregaDerecha}.
      */
     @Test public void testAgregaDerecha() {
+	arbol.creaRaiz(random.nextInt(1000));
 	VerticeArbolBinario<Integer> tmp = arbol.raiz();
         for (int i = 0; i < total; i++) {
             int n = random.nextInt(100);
-            arbol.agregaDerecha(n, tmp);
+            boolean bool = arbol.agregaDerecha(n, tmp);
+	    Assert.assertTrue(bool);
 	    Assert.assertTrue(tmp.hayDerecho());
-	    tmp = tmp.derecho;
+	    tmp = tmp.getDerecho();
             VerticeArbolBinario<Integer> v;
             v = arbol.getUltimoVerticeAgregado();
-            Assert.assertTrue(arbol.getElementos() == i+1);
+            Assert.assertTrue(arbol.getElementos() == i+2);
             VerticeArbolBinario<Integer> it = arbol.busca(n);
             Assert.assertTrue(it != null);
             Assert.assertTrue(it.get() == n);
-            arbolBinarioOrdenadoValido(arbol);
             Assert.assertTrue(v.get() == n);
         }
     }
@@ -152,8 +129,17 @@ public class TestArbolBinarioOrdenado {
      */
     @Test public void testElimina() {
         int[] a = arregloSinRepetidos();
-        for (int n : a)
-            arbol.agrega(n);
+	arbol.creaRaiz(a[0]);
+	VerticeArbolBinario<Integer> tmp = arbol.raiz();
+	for(int i = 1; i < a.length; i++){
+	    if(i % 2 == 0){
+		arbol.agregaIzquierda(a[i], tmp);
+		tmp = tmp.getIzquierdo();
+	    }else{
+		arbol.agregaDerecha(a[i], tmp);
+		tmp = tmp.getDerecho();
+	    }
+	}
         int n = total;
         while (arbol.getElementos() > 0) {
             Assert.assertTrue(arbol.getElementos() == n);
@@ -164,11 +150,12 @@ public class TestArbolBinarioOrdenado {
             VerticeArbolBinario<Integer> it = arbol.busca(e);
             Assert.assertTrue(it != null);
             Assert.assertTrue(it.get() == e);
+	    int elems = arbol.contarElementos(it);
             arbol.elimina(e);
             it = arbol.busca(e);
             Assert.assertTrue(it == null);
-            Assert.assertTrue(arbol.getElementos() == --n);
-            arbolBinarioOrdenadoValido(arbol);
+	    Assert.assertTrue(arbol.getElementos() == n - elems);
+	    n -= elems;
             a[i] = -1;
         }
     }
@@ -178,8 +165,17 @@ public class TestArbolBinarioOrdenado {
      */
     @Test public void testBusca() {
         int[] a = arregloSinRepetidos();
-        for (int n : a)
-            arbol.agrega(n);
+	arbol.creaRaiz(a[0]);
+	VerticeArbolBinario<Integer> tmp = arbol.raiz();
+	for(int i = 1; i < a.length; i++){
+	    if(i % 2 == 0){
+		arbol.agregaIzquierda(a[i], tmp);
+		tmp = tmp.getIzquierdo();
+	    }else{
+		arbol.agregaDerecha(a[i], tmp);
+		tmp = tmp.getDerecho();
+	    }
+	}
         for (int i : a) {
             VerticeArbolBinario<Integer> it = arbol.busca(i);
             Assert.assertTrue(it != null);
@@ -194,8 +190,10 @@ public class TestArbolBinarioOrdenado {
      */
     @Test public void testProfundidad() {
         for (int i = 0; i < total; i++) {
-            arbol.agrega(random.nextInt(total));
-            arbolBinarioOrdenadoValido(arbol);
+	    if(i == 0)
+		arbol.creaRaiz(i);
+	    else
+		arbol.agregaIzquierda(i, arbol.getUltimoVerticeAgregado());
             int min = (int)Math.floor(Math.log(i+1)/Math.log(2));
             int max = i;
             Assert.assertTrue(arbol.profundidad() >= min &&
@@ -208,78 +206,33 @@ public class TestArbolBinarioOrdenado {
      */
     @Test public void testGetElementos() {
         for (int i = 0; i < total; i++) {
-            arbol.agrega(random.nextInt(total));
-            arbolBinarioOrdenadoValido(arbol);
+	    if(i == 0)
+		arbol.creaRaiz(i);
+	    else
+		arbol.agregaIzquierda(i, arbol.getUltimoVerticeAgregado());
             Assert.assertTrue(arbol.getElementos() == i+1);
         }
     }
-
-    /**
-     * Prueba unitaria para {@link ArbolBinarioSeleccion#raiz}.
-     */
-    @Test public void testRaiz() {
-        try {
-            arbol.raiz();
-            Assert.fail();
-        } catch (NoSuchElementException nsee) {}
-        int p = Integer.MAX_VALUE;
-        for (int i = 0; i < total; i++) {
-            int v = random.nextInt(total);
-            if (p == Integer.MAX_VALUE)
-                p = v;
-            arbol.agrega(v);
-        }
-        VerticeArbolBinario<Integer> v = arbol.raiz();
-        Assert.assertTrue(v.get() == p);
-    }
-
+    
     /**
      * Prueba unitaria para {@link ArbolBinario#equals}.
      */
     @Test public void testEquals() {
-        arbol = new ArbolBinarioOrdenado<Integer>();
-        ArbolBinarioOrdenado<Integer> arbol2 = new ArbolBinarioOrdenado<Integer>();
+        arbol = new ArbolBinarioSeleccion<Integer>();
+        ArbolBinarioSeleccion<Integer> arbol2 = new ArbolBinarioSeleccion<Integer>();
         Assert.assertTrue(arbol.equals(arbol2));
         for (int i = 0; i < total; i++) {
-            arbol.agrega(i);
-            arbol2.agrega(i);
-        }
-        Assert.assertFalse(arbol == arbol2);
-        Assert.assertTrue(arbol.equals(arbol2));
-        arbol = new ArbolBinarioOrdenado<Integer>();
-        arbol2 = new ArbolBinarioOrdenado<Integer>();
-        for (int i = 0; i < total; i++) {
-            arbol.agrega(i);
-            if (i != total - 1)
-                arbol2.agrega(i);
-        }
-        Assert.assertFalse(arbol == arbol2);
-        Assert.assertFalse(arbol.equals(arbol2));
-    }
+	    if(i == 0){
+		arbol.creaRaiz(i);
+		arbol2.creaRaiz(i);
+	    }else{
+		arbol.agregaIzquierda(i, arbol.getUltimoVerticeAgregado());
+		arbol2.agregaIzquierda(i, arbol2.getUltimoVerticeAgregado());
+	    }
 
-    /**
-     * Prueba unitaria para {@link ArbolBinarioSeleccion#toString}.
-     */
-    @Test public void testToString() {
-        /* Estoy dispuesto a aceptar una mejor prueba. */
-        Assert.assertTrue(arbol.toString() != null &&
-                          arbol.toString().equals(""));
-        for (int i = 0; i < total; i++) {
-            arbol.agrega(random.nextInt(total));
-            arbolBinarioOrdenadoValido(arbol);
-            Assert.assertTrue(arbol.toString() != null &&
-                              !arbol.toString().equals(""));
         }
-        String cadena =
-            "-1\n" +
-            "├─›-3\n" +
-            "│  └─›-5\n" +
-            "└─»2\n" +
-            "   └─»4";
-        arbol = new ArbolBinarioOrdenado<Integer>();
-        for (int i = 1; i <= 5; i++)
-            arbol.agrega(i * (int)Math.pow(-1, i));
-        Assert.assertTrue(arbol.toString().equals(cadena));
+        Assert.assertFalse(arbol == arbol2);
+        Assert.assertTrue(arbol.equals(arbol2));
     }
 
     /**
@@ -289,10 +242,12 @@ public class TestArbolBinarioOrdenado {
         Lista<Integer> lista = new Lista<Integer>();
         for (int i = 0; i < total; i++) {
             int n = random.nextInt(100);
-            arbol.agrega(n);
-            lista.agregaFinal(n);
+	    if(i == 0)
+		arbol.creaRaiz(n);
+	    else
+		arbol.agregaIzquierda(n, arbol.getUltimoVerticeAgregado());
+            lista.agregaInicio(n);
         }
-        lista = Lista.mergeSort(lista);
         int c = 0;
         Iterator<Integer> i1 = arbol.iterator();
         Iterator<Integer> i2 = lista.iterator();
@@ -302,8 +257,16 @@ public class TestArbolBinarioOrdenado {
     }
 
     /**
-     * Prueba unitaria para {@link ArbolBinarioSeleccion#giraDerecha}.
+     * Prueba unitaria para {@link ArbolBinarioSeleccion#contarElementos}.
      */
+    @Test public void testContarElementos(){
+
+    }
+    
+    /*
+    /**
+     * Prueba unitaria para {@link ArbolBinarioSeleccion#giraDerecha}.
+     *
     @Test public void testGiraDerecha() {
         if (total == 1)
             total++;
@@ -373,7 +336,7 @@ public class TestArbolBinarioOrdenado {
 
     /**
      * Prueba unitaria para {@link ArbolBinarioSeleccion#giraIzquierda}.
-     */
+     *
     @Test public void testGiraIzquierda() {
         if (total == 1)
             total++;
@@ -440,4 +403,5 @@ public class TestArbolBinarioOrdenado {
             vertice = vertice.getPadre();
         }
     }
+    */
 }
