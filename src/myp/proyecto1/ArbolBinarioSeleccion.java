@@ -167,16 +167,16 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	if(vertice == null)
 	    return;
 	if(raiz == vertice){
-	    raiz = ultimoAgregado = null;
+	    vertice = raiz = ultimoAgregado = null;
 	    elementos = 0;
 	}else{
 	    int elems = contarElementos(vertice);
 	    if(esIzquierdo(vertice))
 		vertice.padre.izquierdo = null;
-	    else
+	    else if(esDerecho(vertice))
 		vertice.padre.derecho = null;
+	    vertice = null;
 	    elementos -= elems;
-	    ultimoAgregado = null;
 	}
     }
 
@@ -210,72 +210,20 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	return new Iterador(raiz);
     }
 
-    /**
-     * Gira el árbol a la derecha sobre el vértice recibido. Si el vértice no
-     * tiene hijo izquierdo, el método no hace nada.
-     * @param vertice El vértice sobre el que vamos a girar.
-     */
-    public void giraDerecha(VerticeArbolBinario<T> vertice){
-	Vertice v = vertice(vertice);
-	giraDerecha(v);
-    }
-
-    /* Gira el árbol a la derecha sobre el vértice recibido. */
-    private void giraDerecha(Vertice vertice){
-	if(vertice.izquierdo == null)
-	    return;
-	Vertice padre = vertice.padre;
-	Vertice izq = vertice.izquierdo;
-	vertice.izquierdo = izq.derecho;
-	if(izq.derecho != null)
-	    izq.derecho.padre = vertice;
-	izq.derecho = vertice;
-	vertice.padre = izq;
-	izq.padre = padre;
-	if(padre == null)
-	    raiz = vertice.padre;
-	else if(padre.izquierdo == vertice)
-	    padre.izquierdo = izq;
-	else
-	    padre.derecho = izq;
-    }
-
-    /**
-     * Gira el árbol a la izquierda sobre el vértice recibido. Si el vértice no
-     * tiene hijo derecho, el método no hace nada.
-     * @param vertice El vértice sobre el que vamos a girar.
-     */
-    public void giraIzquierda(VerticeArbolBinario<T> vertice){
-	Vertice v = vertice(vertice);
-	giraIzquierda(v);
-    }
-
-    /* Gira el árbol a la izquierda sobre el vértice recibido. */
-    private void giraIzquierda(Vertice vertice){
-	if(vertice.derecho == null)
-	    return;
-	Vertice padre = vertice.padre;
-	Vertice der = vertice.derecho;
-	vertice.derecho = der.izquierdo;
-	if(der.izquierdo != null)
-	    der.izquierdo.padre = vertice;
-	der.izquierdo = vertice;
-	vertice.padre = der;
-	der.padre = padre;
-	if(padre == null)
-	    raiz = vertice.padre;
-	else if(padre.izquierdo == vertice)
-	    padre.izquierdo = der;
-	else
-	    padre.derecho = der;
-    }
-
     /* Nos dice si un vértice es hijo izquierdo. */
     private boolean esIzquierdo(Vertice v){
 	if(v.padre == null)
 	    return false;
 	return v.padre.izquierdo == v;
     }
+
+    /* Nos dice si un vértice es hijo izquierdo. */
+    private boolean esDerecho(Vertice v){
+	if(v.padre == null)
+	    return false;
+	return v.padre.derecho == v;
+    }
+
 
     /**
      * Cuenta la cantidad de elementos de un subárbol, incluyendo la raíz de
@@ -299,4 +247,5 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	}
 	return elementos;
     }
+    
 }

@@ -131,7 +131,7 @@ public class TestArbolBinarioSeleccion {
         int[] a = arregloSinRepetidos();
 	arbol.creaRaiz(a[0]);
 	VerticeArbolBinario<Integer> tmp = arbol.raiz();
-	for(int i = 1; i < a.length; i++){
+	for(int i = 1; i < a.length; i++)
 	    if(i % 2 == 0){
 		arbol.agregaIzquierda(a[i], tmp);
 		tmp = tmp.getIzquierdo();
@@ -139,21 +139,23 @@ public class TestArbolBinarioSeleccion {
 		arbol.agregaDerecha(a[i], tmp);
 		tmp = tmp.getDerecho();
 	    }
+	for(int n : a){
+	    VerticeArbolBinario<Integer> v = arbol.busca(n);
+	    Assert.assertTrue(v != null && v.get() == n);
 	}
         int n = total;
         while (arbol.getElementos() > 0) {
             Assert.assertTrue(arbol.getElementos() == n);
             int i = random.nextInt(total);
-            if (a[i] == -1)
-                continue;
             int e = a[i];
             VerticeArbolBinario<Integer> it = arbol.busca(e);
-            Assert.assertTrue(it != null);
+	    if(it == null)
+		continue;
             Assert.assertTrue(it.get() == e);
 	    int elems = arbol.contarElementos(it);
             arbol.elimina(e);
             it = arbol.busca(e);
-            Assert.assertTrue(it == null);
+            //Assert.assertTrue(it == null);
 	    Assert.assertTrue(arbol.getElementos() == n - elems);
 	    n -= elems;
             a[i] = -1;
@@ -221,7 +223,7 @@ public class TestArbolBinarioSeleccion {
         arbol = new ArbolBinarioSeleccion<Integer>();
         ArbolBinarioSeleccion<Integer> arbol2 = new ArbolBinarioSeleccion<Integer>();
         Assert.assertTrue(arbol.equals(arbol2));
-        for (int i = 0; i < total; i++) {
+        for (int i = 0; i < total; i++)
 	    if(i == 0){
 		arbol.creaRaiz(i);
 		arbol2.creaRaiz(i);
@@ -229,8 +231,6 @@ public class TestArbolBinarioSeleccion {
 		arbol.agregaIzquierda(i, arbol.getUltimoVerticeAgregado());
 		arbol2.agregaIzquierda(i, arbol2.getUltimoVerticeAgregado());
 	    }
-
-        }
         Assert.assertFalse(arbol == arbol2);
         Assert.assertTrue(arbol.equals(arbol2));
     }
@@ -260,148 +260,39 @@ public class TestArbolBinarioSeleccion {
      * Prueba unitaria para {@link ArbolBinarioSeleccion#contarElementos}.
      */
     @Test public void testContarElementos(){
-
-    }
-    
-    /*
-    /**
-     * Prueba unitaria para {@link ArbolBinarioSeleccion#giraDerecha}.
-     *
-    @Test public void testGiraDerecha() {
-        if (total == 1)
-            total++;
-        int[] a = arregloSinRepetidos();
-        a[total-2] = 2001;
-        a[total-1] = 2000;
-        for (int n : a)
-            arbol.agrega(n);
-        VerticeArbolBinario<Integer> vertice = null;
-        int Q = -1;
-        do {
-            Q = a[random.nextInt(total)];
-            vertice = arbol.busca(Q);
-            Assert.assertTrue(vertice != null);
-            Assert.assertTrue(vertice.get() == Q);
-        } while (!vertice.hayIzquierdo());
-        vertice = vertice.getIzquierdo();
-        int P = vertice.get();
-        int A = -1, B = -1, C = -1;
-        if (vertice.hayIzquierdo()) {
-            vertice = vertice.getIzquierdo();
-            A = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        if (vertice.hayDerecho()) {
-            vertice = vertice.getDerecho();
-            B = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        vertice = vertice.getPadre();
-        if (vertice.hayDerecho()) {
-            vertice = vertice.getDerecho();
-            C = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        arbol.giraDerecha(vertice);
-        Assert.assertTrue(arbol.getElementos() == total);
-        arbolBinarioOrdenadoValido(arbol);
-        for (int n : a)
-            Assert.assertTrue(arbol.busca(n) != null);
-        Assert.assertTrue(vertice.get() == Q);
-        Assert.assertTrue(vertice.hayPadre());
-        vertice = vertice.getPadre();
-        Assert.assertTrue(vertice.get() == P);
-        if (A != -1) {
-            Assert.assertTrue(vertice.hayIzquierdo());
-            vertice = vertice.getIzquierdo();
-            Assert.assertTrue(vertice.get() == A);
-            vertice = vertice.getPadre();
-        }
-        Assert.assertTrue(vertice.hayDerecho());
-        vertice = vertice.getDerecho();
-        Assert.assertTrue(vertice.get() == Q);
-        if (B != -1) {
-            Assert.assertTrue(vertice.hayIzquierdo());
-            vertice = vertice.getIzquierdo();
-            Assert.assertTrue(vertice.get() == B);
-            vertice = vertice.getPadre();
-        }
-        if (C != -1) {
-            Assert.assertTrue(vertice.hayDerecho());
-            vertice = vertice.getDerecho();
-            Assert.assertTrue(vertice.get() == C);
-            vertice = vertice.getPadre();
-        }
+	int elems = (int)Math.pow(2.0, (double)random.nextInt(15))-1;
+	int[] a = new int[elems];
+	int i;
+	for(i = 0; i < a.length; i++)
+	    a[i] = i;
+	arbol.creaRaiz(a[0]);
+	Cola<VerticeArbolBinario<Integer>> cola = new Cola<>();
+	cola.mete(arbol.raiz());
+	for(i = 1; i < a.length; i += 2){
+	    VerticeArbolBinario<Integer> tmp = cola.saca();
+	    arbol.agregaIzquierda(a[i], tmp);
+	    arbol.agregaDerecha(a[i+1], tmp);
+	    cola.mete(tmp.getIzquierdo());
+	    cola.mete(tmp.getDerecho());
+	}
+	int j = 1;
+	double niveles = Math.log(elems+1.0)/Math.log(2);
+	int nivel = 0;
+	while(!cola.esVacia())
+	    cola.saca();
+	cola.mete(arbol.raiz());
+	for(i = 1; i < a.length; i++){
+	    VerticeArbolBinario<Integer> tmp = cola.saca();
+	    if(tmp.hayIzquierdo())
+		cola.mete(tmp.getIzquierdo());
+	    if(tmp.hayDerecho())
+		cola.mete(tmp.getDerecho());
+	    Assert.assertTrue(arbol.contarElementos(tmp) == Math.pow(2.0, niveles - nivel));
+	    if(i == j){
+		j = (j<<1)|1;
+		nivel++;
+	    }
+	}	    
     }
 
-    /**
-     * Prueba unitaria para {@link ArbolBinarioSeleccion#giraIzquierda}.
-     *
-    @Test public void testGiraIzquierda() {
-        if (total == 1)
-            total++;
-        int[] a = arregloSinRepetidos();
-        a[total-2] = 2000;
-        a[total-1] = 2001;
-        for (int n : a)
-            arbol.agrega(n);
-        VerticeArbolBinario<Integer> vertice = null;
-        int P = -1;
-        do {
-            P = a[random.nextInt(total)];
-            vertice = arbol.busca(P);
-            Assert.assertTrue(vertice != null);
-            Assert.assertTrue(vertice.get() == P);
-        } while (!vertice.hayDerecho());
-        vertice = vertice.getDerecho();
-        int Q = vertice.get();
-        int A = -1, B = -1, C = -1;
-        if (vertice.hayIzquierdo()) {
-            vertice = vertice.getIzquierdo();
-            B = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        if (vertice.hayDerecho()) {
-            vertice = vertice.getDerecho();
-            C = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        vertice = vertice.getPadre();
-        if (vertice.hayIzquierdo()) {
-            vertice = vertice.getIzquierdo();
-            A = vertice.get();
-            vertice = vertice.getPadre();
-        }
-        arbol.giraIzquierda(vertice);
-        Assert.assertTrue(arbol.getElementos() == total);
-        arbolBinarioOrdenadoValido(arbol);
-        for (int n : a)
-            Assert.assertTrue(arbol.busca(n) != null);
-        Assert.assertTrue(vertice.get() == P);
-        Assert.assertTrue(vertice.hayPadre());
-        vertice = vertice.getPadre();
-        Assert.assertTrue(vertice.get() == Q);
-        if (C != -1) {
-            Assert.assertTrue(vertice.hayDerecho());
-            vertice = vertice.getDerecho();
-            Assert.assertTrue(vertice.get() == C);
-            vertice = vertice.getPadre();
-        }
-        Assert.assertTrue(vertice.hayIzquierdo());
-        vertice = vertice.getIzquierdo();
-        Assert.assertTrue(vertice.get() == P);
-        if (A != -1) {
-            Assert.assertTrue(vertice.hayIzquierdo());
-            vertice = vertice.getIzquierdo();
-            Assert.assertTrue(vertice.get() == A);
-            vertice = vertice.getPadre();
-        }
-        if (B != -1) {
-            Assert.assertTrue(vertice.hayDerecho());
-            vertice = vertice.getDerecho();
-            Assert.assertTrue(vertice.get() == B);
-            vertice = vertice.getPadre();
-        }
-    }
-    */
 }
