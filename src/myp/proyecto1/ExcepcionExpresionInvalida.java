@@ -3,7 +3,7 @@ package myp.proyecto1;
 /**
  * Clase para excepciones de expresiones inválidas.
  */
-public class ExcepcionExpresionInvalida extends Eception{
+public class ExcepcionExpresionInvalida extends RuntimeException{
 
     /**
      * Constructor vacío.
