@@ -32,7 +32,7 @@ public class TestArbolBinarioSeleccion {
     }
 
     /**
-     * Crea un árbol binario para cada prueba.
+     * Crea un árbol binario selección para cada prueba.
      */
     public TestArbolBinarioSeleccion() {
         random = new Random();
@@ -158,7 +158,6 @@ public class TestArbolBinarioSeleccion {
             //Assert.assertTrue(it == null);
 	    Assert.assertTrue(arbol.getElementos() == n - elems);
 	    n -= elems;
-            a[i] = -1;
         }
     }
 
@@ -169,7 +168,7 @@ public class TestArbolBinarioSeleccion {
         int[] a = arregloSinRepetidos();
 	arbol.creaRaiz(a[0]);
 	VerticeArbolBinario<Integer> tmp = arbol.raiz();
-	for(int i = 1; i < a.length; i++){
+	for(int i = 1; i < a.length; i++)
 	    if(i % 2 == 0){
 		arbol.agregaIzquierda(a[i], tmp);
 		tmp = tmp.getIzquierdo();
@@ -177,7 +176,6 @@ public class TestArbolBinarioSeleccion {
 		arbol.agregaDerecha(a[i], tmp);
 		tmp = tmp.getDerecho();
 	    }
-	}
         for (int i : a) {
             VerticeArbolBinario<Integer> it = arbol.busca(i);
             Assert.assertTrue(it != null);
@@ -260,7 +258,7 @@ public class TestArbolBinarioSeleccion {
      * Prueba unitaria para {@link ArbolBinarioSeleccion#contarElementos}.
      */
     @Test public void testContarElementos(){
-	int elems = (int)Math.pow(2.0, (double)random.nextInt(15))-1;
+	int elems = (int)Math.pow(2.0, random.nextInt(15)+1.0)-1;
 	int[] a = new int[elems];
 	int i;
 	for(i = 0; i < a.length; i++)
@@ -276,7 +274,7 @@ public class TestArbolBinarioSeleccion {
 	    cola.mete(tmp.getDerecho());
 	}
 	int j = 1;
-	double niveles = Math.log(elems+1.0)/Math.log(2);
+	long niveles = Math.round(Math.log(elems+1.0)/Math.log(2));
 	int nivel = 0;
 	while(!cola.esVacia())
 	    cola.saca();
@@ -287,7 +285,8 @@ public class TestArbolBinarioSeleccion {
 		cola.mete(tmp.getIzquierdo());
 	    if(tmp.hayDerecho())
 		cola.mete(tmp.getDerecho());
-	    Assert.assertTrue(arbol.contarElementos(tmp) == Math.pow(2.0, niveles - nivel));
+	    Assert.assertTrue(arbol.contarElementos(tmp) ==
+			      (Math.pow(2.0, niveles - nivel + 0.0)-1));
 	    if(i == j){
 		j = (j<<1)|1;
 		nivel++;

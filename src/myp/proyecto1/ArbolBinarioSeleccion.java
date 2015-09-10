@@ -154,7 +154,7 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
     /**
      * Elimina un elemento. Si el elemento no está en el árbol, no hace nada; si
      * está varias veces, elimina el primero que encuentre incluyendo todo el
-     * subárbol debajo del vértice.
+     * subárbol debajo del vértice que contenga dicho elemento.
      * @param elemento El elemento a eliminar.
      */
     @Override public void elimina(T elemento){
@@ -236,7 +236,7 @@ public class ArbolBinarioSeleccion<T> extends ArbolBinario<T>{
 	if(vertice == null)
 	    return 0;
 	Vertice v = vertice(vertice);
-	int elementos = 1;
+	int elementos = 0;
 	Cola<Vertice> cola = new Cola<>();
 	cola.mete(v);
 	while(!cola.esVacia()){

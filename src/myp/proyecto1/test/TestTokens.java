@@ -38,6 +38,7 @@ public class TestTokens{
      */
     @Test public void testObtenerTokens(){
 	int i;
+	
 	//Prueba fija para números.
 	for(String n : numerosValidos){
 	    Lista<String> nums = tokenizador.obtenerTokens(n);
@@ -72,6 +73,7 @@ public class TestTokens{
 	//Prueba fija para cadenas.
 	String expr = "";
 	String expr2 = "";
+	String expr3 = "asdfghjklñ{}";
 	int r = random.nextInt(100);
 	for(i = 0; i < r; i++){
 	    int rand = random.nextInt(15);
@@ -81,6 +83,10 @@ public class TestTokens{
 	Lista<String> tokens = tokenizador.obtenerTokens(expr);
 	Lista<String> tokens2 = tokenizador.obtenerTokens(expr2);
 	Assert.assertTrue(tokens.equals(tokens2));
+	try{
+	    Lista<String> tokens3 = tokenizador.obtenerTokens(expr3);
+	    Assert.fail();
+	}catch(ExcepcionExpresionInvalida eei){}
 
 	//Prueba aleatoria para cadenas.
 	for(i = random.nextInt(50); i > 0; i--){
@@ -109,9 +115,12 @@ public class TestTokens{
 	random.nextBytes(bytes);
 	String cadena = "";
 	for(int i = 0; i < r; i++){
-	    char c = (char)(bytes[i] << (random.nextInt(9)));
+	    char c = (char)bytes[i];
+	    if(c < '{')
+		c += '{';
 	    cadena += c;
 	}
 	return cadena;
     }
+    
 }

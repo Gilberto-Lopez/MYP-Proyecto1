@@ -9,13 +9,14 @@ import mx.unam.ciencias.edd.Lista;
 public class Tokens{
 
     /**
-     * Método que recibe como entrada un String el cual será dividido en tokens
-     * para posteriormente colocarlos en una lista, siempre respetando el orden
-     * en que aparecen en la cadena de entrada.
+     * Método que recibe como entrada un String para posteriormente dividirlo
+     * en tokens y colocarlos en una lista, siempre respetando el orden en que
+     * aparecen en la cadena de entrada.
      * @param cadena Un String a partir del cual obtendremos los tokens.
      * @return Una lista con los tokens del String <code>cadena</code>.
      * @throws ExcepcionExpresionInvalida en caso de que <code>cadena</code> sea
-     *         una cadena vacía o una referencia null.
+     *         una cadena vacía, una referencia null o es una expresión
+     *         inválida.
      */
     public Lista<String> obtenerTokens(String cadena){
 	if(cadena == null || cadena.equals(""))
