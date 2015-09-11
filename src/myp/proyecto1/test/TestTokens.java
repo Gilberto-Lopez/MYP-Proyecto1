@@ -74,15 +74,32 @@ public class TestTokens{
 	String expr = "";
 	String expr2 = "";
 	String expr3 = "asdfghjklñ{}";
+	String expr4 = "";
+	String expr5 = "";
 	int r = random.nextInt(100);
 	for(i = 0; i < r; i++){
 	    int rand = random.nextInt(15);
 	    expr += expresiones[rand];
 	    expr2 += expresiones[rand] + " ";
 	}
+	for(i = 0; i < r; i++){
+	    if(i % 3 != 0){
+		expr4 += numerosValidos[i%3] + " ";
+		expr5 += numerosValidos[i%3] + " ";
+	    }
+	    int j = i;
+	    while(j >= expresiones.length){
+		j -= expresiones.length;
+	    }
+	    expr4 += expresiones[j] + " ";
+	    expr5 += expresiones[j];
+	}
 	Lista<String> tokens = tokenizador.obtenerTokens(expr);
 	Lista<String> tokens2 = tokenizador.obtenerTokens(expr2);
 	Assert.assertTrue(tokens.equals(tokens2));
+	Lista<String> tokens4 = tokenizador.obtenerTokens(expr4);
+	Lista<String> tokens5 = tokenizador.obtenerTokens(expr5);
+	Assert.assertTrue(tokens4.equals(tokens5));
 	try{
 	    Lista<String> tokens3 = tokenizador.obtenerTokens(expr3);
 	    Assert.fail();
