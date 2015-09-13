@@ -20,7 +20,7 @@ public class Tokens{
      */
     public Lista<String> obtenerTokens(String cadena){
 	if(cadena == null || cadena.equals(""))
-	    throw new ExcepcionExpresionInvalida("Asegúrese de proporcionar una expresión.");
+	    Utils.excepcion("Asegúrese de proporcionar una expresión.");
 	char[] caracteres = cadena.toCharArray();
 	Lista<String> lista = new Lista<>();
 	for(int i = 0; i < caracteres.length; i++){
@@ -41,14 +41,14 @@ public class Tokens{
 			p++;
 		    num += caracteres[j];
 		    if(p == 2)
-			throw new ExcepcionExpresionInvalida("Expresión inválida: \"" + num + "\" -- Contiene dos puntos para decimales.");
+			Utils.excepcion("Expresión inválida: \"" + num + "\" -- Contiene dos puntos para decimales.");
 		    j++;
 		}
 		i = j-1;
 		lista.agrega(num);
 	    }else if(c == 's' || c == 'c' || c == 't'){
 		if(i+2 >= caracteres.length)
-		    throw new ExcepcionExpresionInvalida("\"" + c + caracteres[i+1] + "\" no es una expresión válida.");
+		    Utils.excepcion("\"" + c + caracteres[i+1] + "\" no es una expresión válida.");
 		char c1 = caracteres[i+1];
 		char c2 = caracteres[i+2];
 		if(c == 's' && c1 == 'i' && c2 == 'n')
@@ -66,10 +66,10 @@ public class Tokens{
 		else if(c == 't' && c1 == 'a' && c2 == 'n')
 		    lista.agrega("tan");
 		else
-		    throw new ExcepcionExpresionInvalida("\"" + c + c1 + c2 + "\" no es una expresión válida.");
+		    Utils.excepcion("\"" + c + c1 + c2 + "\" no es una expresión válida.");
 		i += 2;
 	    }else
-		throw new ExcepcionExpresionInvalida("\"" + cadena + "\" no es una expresión válida. ");
+		Utils.excepcion("\"" + cadena + "\" no es una expresión válida. ");
 	}
 	return lista;
     }
