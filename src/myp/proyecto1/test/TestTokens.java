@@ -38,6 +38,13 @@ public class TestTokens{
      */
     @Test public void testObtenerTokens(){
 	int i;
+	//Casos límite, cadena vacía y referencia null.
+	try{
+	    Lista<String> vacia = tokenizador.obtenerTokens("");
+	    Assert.fail();
+	    Lista<String> nula = tokenizador.obtenerTokens(null);
+	    Assert.fail();
+	}catch(ExcepcionExpresionInvalida eei){}
 	
 	//Prueba fija para números.
 	for(String n : numerosValidos){

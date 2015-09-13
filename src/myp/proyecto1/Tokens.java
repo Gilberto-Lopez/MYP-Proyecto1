@@ -40,7 +40,7 @@ public class Tokens{
 		    if(caracteres[j] == '.')
 			p++;
 		    num += caracteres[j];
-		    if(p == 2)
+		    if(p > 1)
 			Utils.excepcion("Expresión inválida: \"" + num + "\" -- Contiene dos puntos para decimales.");
 		    j++;
 		}
