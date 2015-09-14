@@ -3,6 +3,7 @@ package myp.proyecto1;
 import mx.unam.ciencias.edd.Lista;
 import mx.unam.ciencias.edd.Pila;
 import mx.unam.ciencias.edd.Cola;
+import java.util.NoSuchElementException;
 
 /**
  * Clase para analizar ecuaciones matemáticas en
@@ -14,7 +15,7 @@ import mx.unam.ciencias.edd.Cola;
 public class Parser{
 
     /* Pila de operadores. */
-    private Pila<Strign> pila;
+    private Pila<String> pila;
 
     /**
      * Constructor sin parámetros.
@@ -24,9 +25,9 @@ public class Parser{
     }
 
     /**
-     * Analiza la ecuación matématica, la cual ya ha sido divida en tokens
-     * (fichas) y es recibida como una lista, la convierte a Notación Polaca
-     * Inversa y la devuelve dentro de una cola.
+     * Analiza (parsing) la ecuación matématica (función) , la cual ya ha sido
+     * divida en tokens (fichas) y es recibida como una lista, la convierte a
+     * Notación Polaca Inversa y la devuelve dentro de una cola.
      * @param tokens La lista de tokens de la ecuación matemática.
      * @return Una cola con la ecuación matemática en Notación Polaca Inversa.
      * @throws ExcepcionExpresionInvalida en caso de que la ecuación no sea una
@@ -34,28 +35,44 @@ public class Parser{
      */
     public Cola<String> parsea(Lista<String> tokens){
 	Cola<String> cola = new Cola<>();
-	for(String t : tokens){
-	    if(Utils.esNumero(t))
+	int l = tokens.getLongitud();
+	for(int i = 0; i < l; i++){
+	    String t = tokens.get(i);
+	    if(Utils.esVariable(t))
+		cola.mete(t);
+	    else if(Utils.esNumero(t))
 		cola.mete(t);
 	    else if(Utils.esFuncion(t))
 		pila.mete(t);
-	    else if(Utils.esOperador(t))
-		while(!pila.mira().equals("(") &&
+	    else if(Utils.esOperador(t)){
+		while(!pila.esVacia() && Utils.esOperador(pila.mira()) &&
 		      ((t.equals("^") &&
-			Utils.comparaPrecedencias(t, pila.mira()) < 0) ||
+			Utils.comparaPrecedencia(t, pila.mira()) < 0) ||
 		       (!t.equals("^") &&
-			Utils.comparaPrecedencias(t, pila.mira()) <= 0))){
+			Utils.comparaPrecedencia(t, pila.mira()) <= 0))){
 		    cola.mete(pila.saca());
-		    pila.mete(t);
 		}
-	    else if(t.equals("("))
 		pila.mete(t);
-	    else if(t.equals(")")){
+		while(tokens.get(i+1).equals("-")){
+		    i++;
+		    cola.mete("0.0");
+		    pila.mete("-");
+		}
+	    }else if(t.equals("(")){
+		if(tokens.get(i+1).equals(")"))
+		    Utils.excepcion("() no es una expresión válida.");
+		pila.mete(t);
+		while(tokens.get(i+1).equals("-")){
+		    i++;
+		    cola.mete("0.0");
+		    pila.mete("-");
+		}
+	    }else if(t.equals(")")){
 		try{
 		    while(!pila.mira().equals("("))
 			cola.mete(pila.saca());
 		}catch(NoSuchElementException nsee){
-		    Utils.excepcion("Los paréntesis no están balanceados.");
+		    Utils.excepcion("Los paréntesis no están bien balanceados.");
 		}
 		pila.saca();
 		try{
@@ -64,7 +81,8 @@ public class Parser{
 		}catch(NoSuchElementException nsee){
 		    continue;
 		}
-	    }
+	    }else
+		Utils.excepcion("\"" + t + "\" no es una expresión válida.");
 	}
 	while(!pila.esVacia()){
 	    String t = pila.saca();
@@ -74,6 +92,5 @@ public class Parser{
 	}
 	return cola;
     }
-
 
 }
