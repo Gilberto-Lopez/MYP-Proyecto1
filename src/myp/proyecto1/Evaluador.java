@@ -2,6 +2,7 @@ package myp.proyecto1;
 
 import mx.unam.ciencias.edd.Pila;
 import mx.unam.ciencias.edd.Cola;
+import java.util.NoSuchElementException;
 
 /**
  * Clase para evaluar ecuaciones matemáticas (funciones) en Notación Polaca
@@ -68,12 +69,13 @@ public class Evaluador{
 		}else
 		    Utils.excepcion("La expresión introducida no es válida, la función \"" + t + "\" no tiene argumentos.");
 	    }else if(Utils.esOperador(t)){
-		if(t.equals("-")){
-		    
-		}
 		try{
 		    double arg2 = pila.saca();
-		    doubel arg1 = pila.saca();
+		    if(pila.esVacia() && t.equals("-")){
+			pila.mete(-arg2);
+			continue;
+		    }
+		    double arg1 = pila.saca();
 		    if(t.equals("+")){
 			if(Double.isNaN(arg1) || Double.isNaN(arg2))
 			    pila.mete(Double.NaN);
@@ -96,7 +98,7 @@ public class Evaluador{
 			pila.mete(Math.pow(arg1, arg2));
 		    }
 		}catch(NoSuchElementException nsee){
-		    Utils.excepcion("La expresión introducida no es válida, el opeeador \"" + t + "\" no tiene el número corecto de operandos.");
+		    Utils.excepcion("La expresión introducida no es válida, el operador \"" + t + "\" no tiene el número corecto de operandos.");
 		}
 	    }
 	}
