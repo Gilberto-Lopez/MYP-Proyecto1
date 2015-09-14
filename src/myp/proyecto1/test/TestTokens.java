@@ -83,7 +83,7 @@ public class TestTokens{
 	String expr3 = "asdfghjklñ{}";
 	String expr4 = "";
 	String expr5 = "";
-	int r = random.nextInt(100);
+	int r = random.nextInt(100) + 50;
 	for(i = 0; i < r; i++){
 	    int rand = random.nextInt(15);
 	    expr += expresiones[rand];
@@ -113,7 +113,7 @@ public class TestTokens{
 	}catch(ExcepcionExpresionInvalida eei){}
 
 	//Prueba aleatoria para cadenas.
-	for(i = random.nextInt(50); i > 0; i--){
+	for(i = random.nextInt(50) + 10; i > 0; i--){
 	    try{
 		Lista<String> tokensAleatorios = tokenizador.obtenerTokens(cadenaAleatoria());
 		Assert.fail();
@@ -123,10 +123,11 @@ public class TestTokens{
 
     /* Genera un arreglo con números aleatorios válidos. */
     private String[] numerosAleatorios(){
-	int r = random.nextInt(50);
+	int r = random.nextInt(50) + 10;
 	String[] numerosAleatorios = new String[r];
 	for(int i = 0; i < r; i++){
-	    String n = String.valueOf(random.nextDouble()*random.nextInt(100));
+	    String n = String.valueOf(random.nextDouble() *
+				      random.nextInt(100) + 0.5);
 	    numerosAleatorios[i] = n;
 	}
 	return numerosAleatorios;
@@ -134,7 +135,7 @@ public class TestTokens{
 
     /* Genera una cadena aleatoria. */
     private String cadenaAleatoria(){
-	int r = random.nextInt(50);
+	int r = random.nextInt(50) + 20;
 	byte[] bytes = new byte[r];
 	random.nextBytes(bytes);
 	String cadena = "";
