@@ -4,7 +4,7 @@ import java.util.Random;
 import myp.proyecto1.Parser;
 import myp.proyecto1.Tokens;
 import myp.proyecto1.ExcepcionExpresionInvalida;
-import mx.unam.ciencias.edd.Cola;
+import mx.unam.ciencias.edd.Lista;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,25 +30,36 @@ public class TestParser{
      * Prueba unitaria para {@link Parser#parsea}.
      */
     @Test public void testParsea(){
-	int i = 0;
+	int i;
 	//Casos fijos
 	//f1(x) = 12 + x * 9
-	Cola<String> f1 = parser.parsea(tokenizador.obtenerTokens("12+x*9"));
+	i = 0;
+	Lista<String> f1 = parser.parsea(tokenizador.obtenerTokens("12+x*9"));
 	String[] f1t = {"12","x","9","*","+"};
-	for(String t : f1t)
-	    Assert.assertTrue(t.equals(f1.saca()));
+	for(String t : f1)
+	    Assert.assertTrue(t.equals(f1t[i++]));
 	//f2(x) = x ^ 9 - 10 / 3
-	Cola<String> f2 = parser.parsea(tokenizador.obtenerTokens("x^9-10/3"));
+	i = 0;
+	Lista<String> f2 =
+	    parser.parsea(tokenizador.obtenerTokens("(x^9-(10/3))"));
 	String[] f2t = {"x","9","^","10","3","/","-"};
-	for(String t : f2t)
-	    Assert.assertTrue(t.equals(f2.saca()));
+	for(String t : f2)
+	    Assert.assertTrue(t.equals(f2t[i++]));
 	//f3(x) = cos(-x)
-	Cola<String> f3 = parser.parsea(tokenizador.obtenerTokens("cos(-x)"));
+	i = 0;
+	Lista<String> f3 = parser.parsea(tokenizador.obtenerTokens("cos(-x)"));
 	String[] f3t = {"0.0","x","-","cos"};
-	for(String t : f3t)
-	    Assert.assertTrue(t.equals(f3.saca()));
+	for(String t : f3)
+	    Assert.assertTrue(t.equals(f3t[i++]));
+	Lista<String> f;
+	//Caso especial
+	//----3
+	i = 0;
+	f = parser.parsea(tokenizador.obtenerTokens("----3"));
+	String[] ft = {"0.0","0.0","0.0","3","-","-","-","-"};
+	for(String t : f)
+	    Assert.assertTrue(t.equals(ft[i++]));
 	//Entradas no manejables
-	Cola<String> f;
 	//() dos paréntesis.
 	try{
 	    f = parser.parsea(tokenizador.obtenerTokens("()"));
@@ -56,7 +67,7 @@ public class TestParser{
 	}catch(ExcepcionExpresionInvalida eei){
 	    System.out.println(eei.getMessage());
 	}
-	//+* dos operadores juntos, salvo "-".
+	//*+ dos operadores juntos, salvo "-".
 	try{
 	    f = parser.parsea(tokenizador.obtenerTokens("*+"));
 	    Assert.fail();
@@ -105,7 +116,7 @@ public class TestParser{
 	}catch(ExcepcionExpresionInvalida eei){
 	    System.out.println(eei.getMessage());
 	}
-	//)x paréntesis de ceirre seguido de algo que no es operador.
+	//)x paréntesis de cierre seguido de algo que no es operador o ")".
 	try{
 	    f = parser.parsea(tokenizador.obtenerTokens(")x"));
 	    Assert.fail();
@@ -119,6 +130,8 @@ public class TestParser{
 	}catch(ExcepcionExpresionInvalida eei){
 	    System.out.println(eei.getMessage());
 	}
+	f = parser.parsea(tokenizador.obtenerTokens("(x^4+(16*x+--3)^3-74*x+16)/2^3"));
+	f = parser.parsea(tokenizador.obtenerTokens("x^2+-3*x+(15^2-2)"));
     }
 
 }
