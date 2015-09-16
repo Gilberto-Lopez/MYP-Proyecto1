@@ -1,9 +1,9 @@
-package myp.proyecto1.test;
+package myp.proyecto1.modelo.test;
 
 import java.util.Random;
-import myp.proyecto1.Evaluador;
-import myp.proyecto1.Parser;
-import myp.proyecto1.Tokens;
+import myp.proyecto1.modelo.Evaluador;
+import myp.proyecto1.modelo.Parser;
+import myp.proyecto1.modelo.Tokens;
 import mx.unam.ciencias.edd.Lista;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,8 +64,11 @@ public class TestEvaluador{
 	//Caso especial ----3 = 3
 	Lista<String> f = parser.parsea(tokenizador.obtenerTokens("----3"));
 	Assert.assertTrue(evaluador.evalua(f, 0.0) == 3);
-	//División entre 0.
-	f = parser.parsea(tokenizador.obtenerTokens("1.0/0.0"));
+	//División entre 0. Numerador distinto de 0
+	f = parser.parsea(tokenizador.obtenerTokens("1/0"));
+	Assert.assertTrue(Double.isInfinite(evaluador.evalua(f, 0.0)));
+	//División entre 0. Numerador 0
+	f = parser.parsea(tokenizador.obtenerTokens("0/0"));
 	Assert.assertTrue(Double.isNaN(evaluador.evalua(f, 0.0)));
 	//NaN.
 	f = parser.parsea(tokenizador.obtenerTokens("sqr(-1)"));

@@ -1,4 +1,4 @@
-package myp.proyecto1;
+package myp.proyecto1.modelo;
 
 /**
  * Clase para excepciones de expresiones inválidas.

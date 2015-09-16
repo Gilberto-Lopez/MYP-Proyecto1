@@ -1,4 +1,4 @@
-package myp.proyecto1;
+package myp.proyecto1.modelo;
 
 import mx.unam.ciencias.edd.Lista;
 

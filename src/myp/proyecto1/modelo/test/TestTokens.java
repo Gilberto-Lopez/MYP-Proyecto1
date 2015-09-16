@@ -1,8 +1,8 @@
-package myp.proyecto1.test;
+package myp.proyecto1.modelo.test;
 
 import java.util.Random;
-import myp.proyecto1.Tokens;
-import myp.proyecto1.ExcepcionExpresionInvalida;
+import myp.proyecto1.modelo.Tokens;
+import myp.proyecto1.modelo.ExcepcionExpresionInvalida;
 import mx.unam.ciencias.edd.Lista;
 import org.junit.Assert;
 import org.junit.Test;
