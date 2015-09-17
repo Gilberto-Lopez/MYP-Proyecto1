@@ -90,6 +90,7 @@ public class GraficadorModelo{
     public void initGraficadorSvg(double ancho, double alto, double x1,
 				  double x2, double y1, double y2){
 	graficador = new GraficaSvg(puntos, ancho, alto, x1, x2, y1, y2);
+	graficador.generaSVGpath();
     }
 
     /**
@@ -100,7 +101,10 @@ public class GraficadorModelo{
      * @param archivo El archivo sobre el cual guardar.
      */
     public void generaGraficaSvg(File archivo) throws IOException{
-	graficador.escribeSVG(archivo);
+	graficador.escribeSVGpath(archivo);
     }
-    
+
+    public String getSVGPath(){
+	return graficador.getPath();
+    }
 }

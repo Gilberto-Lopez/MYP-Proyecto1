@@ -9,7 +9,8 @@ import java.io.IOException;
 
 public class GraficaSvg{
 
-    private String SVG;
+    private String SVGpath;
+    private String ejes;
     private Lista<double[]> puntos;
     private double ancho;
     private double alto;
@@ -27,48 +28,60 @@ public class GraficaSvg{
 	this.x2 = x2;
 	this.y1 = y1;
 	this.y2 = y2;
+	ejes = "";
     }
 
-    public void generaSVG(){
+    public void generaSVGpath(){
 	double dx = (x2-x1)/ancho;
 	double dy = (y1-y2)/alto;
-	SVG = "<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='"
-	    + alto + "' width='"+ ancho + "'>\n<g>";
-	double ceroX = (0-x1-1)*dx;
-	double ceroY = (0-y2-1)*dy;
-	String ejeX = "";
-	String ejeY = "";
-	if(ceroX >= 0)
-	    ejeX += "<line x1='0' x2='"+(ancho-1)+"' y1='"+ceroY+"' y2='"+ceroY+"' style='stroke:black;stroke-width:1' />\n";
-	else
-	    ceroX = x1;
-	if(ceroY >= 0)
-	    ejeY += "<line x1='"+ceroX+"' x2='"+ceroX+"' y1='0' y2='"+(alto-1)+"' style='stroke:black;stroke-width:1' />\n";
-	else
-	    ceroY = y2;
-	SVG += ejeX + ejeY;
+	if(x1 < 0 && x2 > 0){ //eje y
+	    double cero = (0-x1)/dx;
+	    ejes += "<line x1='" + cero +
+		"' y1='" + 0 +
+		"' x2='" + cero +
+		"' y2='" + (alto - 1) +
+		"' style='stroke:black;stroke-width:2' />\n";
+	}
+	if(y1 < 0 && y2 > 0){ //eje x
+	    double cero = -y2/dy;
+	    ejes += "<line x1='" + 0 +
+		"' y1='" + cero +
+		"' x2='" + (ancho - 1) +
+		"' y2='" + cero +
+		"' style='stroke:black;stroke-width:2' />\n";
+	}
+	SVGpath += "<path stroke='red' stroke-width='3' d='";
 	Iterator<double[]> iterador = puntos.iterator();
-	double[] tmp = puntos.getPrimero();
-	if(iterador.hasNext())
-	    tmp = iterador.next();
+	int i = 0;
 	while(iterador.hasNext()){
 	    double[] p = iterador.next();
-	    SVG += "<line x1='" + (ceroY + tmp[0]*dx) +
-		"' y1='" + (ceroX - tmp[1]*dy) +
-		"' x2='" + (ceroY + p[0]*dx) +
-		"' y2='" + (ceroX - p[1]*dy) +
-		"' style='stroke:blue;stroke-width:2' />\n";
-	    tmp = p;
+	    if(Double.isNaN(p[1]) || Double.isInfinite(p[1]))
+		SVGpath += "M" + String.valueOf(dx*i) + " " +
+		    String.valueOf(p[1]/dy);
+	    else
+		SVGpath += "L" + String.valueOf(dx*i) + " " +
+		    String.valueOf(p[1]/dy);
+	    i++;
 	}
-	SVG += "</g>\n</svg>";
+	SVGpath += "'/>\n";
     }
 
-    public void escribeSVG(File archivo) throws IOException{
-	if(SVG == null)
+    public String getPath(){
+	return SVGpath;
+    }
+    
+    public void escribeSVGpath(File archivo) throws IOException{
+	if(SVGpath == null)
 	    return;
 	BufferedWriter bw = null;
 	bw = new BufferedWriter(new FileWriter(archivo));
-	bw.write(SVG);
+	String svgFinal =
+	    "<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='"
+	    + alto + "' width='"+ ancho + "'>\n<g>\n"
+	    + ejes
+	    + SVGpath
+	    + "</g>\n</svg>";
+	bw.write(svgFinal);
 	bw.close();
     }
 

@@ -24,7 +24,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Insets;
 
 public class GraficadorVista extends Application{
-
+    
     @Override public void start(Stage primaryStage){
 	GraficadorControlador controlador = new GraficadorControlador();
 	
@@ -102,6 +102,8 @@ public class GraficadorVista extends Application{
 	actiontarget.setFill(Color.FIREBRICK);
 	grid.add(actiontarget, 0, 6, 5, 1);
 
+	svg.setDisable(true);
+	
 	campoFx.setOnAction((ActionEvent e) -> {
 		actiontarget.setText("Para graficar presione el botón Graficar.");
 	    });
@@ -117,24 +119,40 @@ public class GraficadorVista extends Application{
 		campoY2.setText("");
 		gc.setFill(Color.WHITE);
 		gc.setStroke(Color.BLACK);
+		gc.strokeLine(0, 0, 599, 0);
+		gc.strokeLine(0, 399, 599, 399);
+		gc.strokeLine(0, 0, 0, 399);
+		gc.strokeLine(599, 0, 599, 399);
 		gc.strokeLine(0, 199, 599, 199);
 		gc.strokeLine(299, 0, 299, 399);
 		controlador.limpia();
+		svg.setDisable(true);
 	    });
 	
 	grafica.setOnAction((ActionEvent e) -> {
 		try{
+		    gc.setStroke(Color.RED);
 		    controlador.setFuncion(campoFx.getText());
 		    controlador.setGraphicsContext(gc);
-		    controlador.graficaFuncion();
+		    controlador.graficaFuncion(
+			       Double.parseDouble(campoAncho.getText()),
+			       Double.parseDouble(campoAlto.getText()),
+			       Double.parseDouble(campoX1.getText()),
+			       Double.parseDouble(campoX2.getText()),
+			       Double.parseDouble(campoY1.getText()),
+			       Double.parseDouble(campoY2.getText()));
+		    gc.stroke();
+		    svg.setDisable(false);
 		}catch(Exception ex){
-		    actiontarget.setText(ex.getMessage());
+		    actiontarget.setText(ex.getMessage() + ex.getClass().toString());
+		    ex.printStackTrace();
 		}
 	    });
 	
 	svg.setOnAction((ActionEvent e) -> {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Guardar");
+		fc.setInitialFileName(campoFx.getText()+".svg");
 		File file = fc.showSaveDialog(primaryStage);
 		if(file != null){
 		    try{
