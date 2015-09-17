@@ -11,7 +11,7 @@
     <jar jarfile="proyecto1.jar">
       <zipfileset dir="${build.dir}" prefix="" excludes="**/*test*/"  />
       <manifest>
-	*->        <attribute name="Main-Class" value=""/>
+        <attribute name="Main-Class" value="myp.proyecto1.Main"/>
       </manifest>
     </jar>
   </target>
