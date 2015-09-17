@@ -1,4 +1,12 @@
 # MYP-Proyecto1
+
+Ejecución: Tras descargar y descomprimir el .zip de Github, en el directorio donde se encuentren los archivos descomprimidos ejecute en la terminal el comando:
+<code>$ ant</code>
+Para generar la documentación ejecute el comando:
+<code>$ ant doc</code>
+Para correr las pruebas unitarias ejecute el comando:
+<code>$ ant test</code>
+
 Modelado y Programación, Proyecto 1
 
 <strong>Descipción del proyecto:</strong>
