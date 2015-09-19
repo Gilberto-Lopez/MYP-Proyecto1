@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.File;
 
 /**
- * Clase modelo para el Graficador de funciones.
+ * Clase modelo para el Graficador de funciones. Esta clase corresponde al
+ * modelo del proyecto, siguiendo el Patrón de diseño <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a>.
  */
 public class GraficadorModelo{
 
@@ -30,7 +31,8 @@ public class GraficadorModelo{
 
     /**
      * Añade una función al GraficadorModelo para poder ser evaluada y graficada
-     * posteriormente.
+     * posteriormente. Para asignar una nueva función antes debe llamarse el
+     * método {@link #limpia}.
      * @param funcion La función.
      */
     public void setFuncion(String funcion){
@@ -39,18 +41,14 @@ public class GraficadorModelo{
 
     /**
      * Evalua la función del GraficadorModelo en un punto x y guarda el valor
-     * en la lista de puntos del GraficadorModelo. Si ho ha sido asignada una
-     * función con {@link #setFuncion}, o si se ha llamado a {@link #limpia},
-     * entonces el objeto no tiene una función asignada y el método no hace
-     * nada.
+     * en la lista de puntos del GraficadorModelo. Antes debe de asginarse una
+     * función con {@link #setFuncion}.
      * @param x El valor de x sobre el cual evaluar la función.
      */
     public void evaluaFuncion(double x){
-	if(funcion.getLongitud() == 0){
-	    double val = evaluador.evalua(funcion, x);
-	    double[] punto = {x, val};
-	    puntos.agrega(punto);
-	}
+	double val = evaluador.evalua(funcion, x);
+	double[] punto = {x, val};
+	puntos.agrega(punto);
     }
 
     /**
@@ -79,7 +77,8 @@ public class GraficadorModelo{
      * del objeto GraficadorModelo en formato SVG, especificando sus dimensiones
      * (ancho y alto) y los límites superiores e inferiores del eje x, x1 y x2,
      * y del eje y, y1 y y2, así la gráfica se genera sobre la región
-     * [x1,x2]x[y1,y2].
+     * [x1,x2]x[y1,y2]. Antes debe de evaluarse la función sobr elos puntos del
+     * intervalo [x1,x2] con {@link #evaluaFuncion}.
      * @param ancho El ancho de la imagen SVG.
      * @param alto El alto de la imagen SVG.
      * @param x1 El límite superior sobre el eje x.
@@ -97,13 +96,21 @@ public class GraficadorModelo{
      * Genera la gráfica en formato SVG de la función del objeto
      * GraficadorModelo usando la lista de puntos y la guarda en un archivo.
      * Mientras más puntos se hayan evaluado sobre el intervalo [x1,x2] se
-     * tendrá una mejor aproximación de la gráfica de la función.
+     * tendrá una mejor aproximación de la gráfica de la función. Antes debe de
+     * inicializarse el graficador especial con {@link #initGraficadorSvg}.
      * @param archivo El archivo sobre el cual guardar.
      */
     public void generaGraficaSvg(File archivo) throws IOException{
 	graficador.escribeSVGpath(archivo);
     }
 
+    /**
+     * Regresa un String describiendo la gráfica de la función como un Path de
+     * SVG. La gráfica de la función debe de ser generada antes con
+     * {@link #generaGraficaSvg}.
+     * @return Un String describiendo la gráfica de la función como un Path de
+     *         SVG.
+     */
     public String getSVGPath(){
 	return graficador.getPath();
     }

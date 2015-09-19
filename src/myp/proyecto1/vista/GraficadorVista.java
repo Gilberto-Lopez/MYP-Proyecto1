@@ -3,6 +3,7 @@ package myp.proyecto1.vista;
 import java.io.File;
 import myp.proyecto1.controlador.GraficadorControlador;
 import java.lang.Exception;
+import java.lang.Number;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,94 +16,96 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ColorPicker;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.beans.value.ObservableValue;
 
 public class GraficadorVista extends Application{
+
+    private GraficadorControlador controlador = new GraficadorControlador();
+    private Canvas canvas = new Canvas(600,400);
+    private GraphicsContext gc = canvas.getGraphicsContext2D();
+    private TextField campoFx = new TextField();
+    private TextField campoAncho = new TextField();
+    private TextField campoAlto = new TextField();
+    private TextField campoX1 = new TextField();
+    private TextField campoX2 = new TextField();
+    private TextField campoY1 = new TextField();
+    private TextField campoY2 = new TextField();
+    private Button limpia = new Button("Limpia");
+    private Button grafica = new Button("Graficar");
+    private Button svg = new Button("SVG");
+    private ColorPicker colorPicker = new ColorPicker(Color.RED);
     
-    @Override public void start(Stage primaryStage){
-	GraficadorControlador controlador = new GraficadorControlador();
-	
+    @Override public void start(Stage primaryStage){	
 	primaryStage.setTitle("Graficador");
-	
+
 	GridPane grid = new GridPane();
 	grid.setAlignment(Pos.CENTER);
 	grid.setHgap(10);
 	grid.setVgap(10);
 	grid.setPadding(new Insets(10, 10, 10, 10));
-
-	Canvas canvas = new Canvas(600, 400);
-	GraphicsContext gc = canvas.getGraphicsContext2D();
-	gc.setStroke(Color.BLACK);
-	gc.strokeLine(0, 0, 599, 0);
-	gc.strokeLine(0, 399, 599, 399);
-	gc.strokeLine(0, 0, 0, 399);
-	gc.strokeLine(599, 0, 599, 399);
-	//ejes x y y
-	gc.strokeLine(0, 199, 599, 199);
-	gc.strokeLine(299, 0, 299, 399);
+	
+	canvasInicio();
 	grid.add(canvas, 0, 0, 5, 1);
 	
-	Label efx = new Label("f(x) = ");
+	final Label efx = new Label("f(x) = ");
 	grid.add(efx, 0, 1);
 
-	TextField campoFx = new TextField();
 	grid.add(campoFx, 1, 1, 3, 1);
 	
-	Label eancho = new Label("Ancho:");
+	final Label eancho = new Label("Ancho:");
 	grid.add(eancho, 0, 2);
 
-	TextField campoAncho = new TextField();
 	grid.add(campoAncho, 1, 2);
 
-	Label ealto = new Label("Alto:");
+	final Label ealto = new Label("Alto:");
 	grid.add(ealto, 2, 2);
 
-	TextField campoAlto = new TextField();
 	grid.add(campoAlto, 3, 2);
 
-	Label ex1 = new Label("x₁:");
+	final Label ex1 = new Label("x₁:");
 	grid.add(ex1, 0, 3);
 
-	TextField campoX1 = new TextField();
 	grid.add(campoX1, 1, 3);
 
-	Label ex2 = new Label("x₂:");
+	final Label ex2 = new Label("x₂:");
 	grid.add(ex2, 2, 3);
 
-	TextField campoX2 = new TextField();
 	grid.add(campoX2, 3, 3);
 
-	Label ey1 = new Label("y₁:");
+	final Label ey1 = new Label("y₁:");
 	grid.add(ey1, 0, 4);
 
-	TextField campoY1 = new TextField();
 	grid.add(campoY1, 1, 4);
 
-	Label ey2 = new Label("y₂:");
+	final Label ey2 = new Label("y₂:");
 	grid.add(ey2, 2, 4);
 
-	TextField campoY2 = new TextField();
 	grid.add(campoY2, 3, 4);
 
-	Button limpia = new Button("Limpia");
-	Button grafica = new Button("Graficar");
-	Button svg = new Button("SVG");
+	grid.add(colorPicker, 4, 1);
+
 	HBox hbBotones = new HBox(20);
 	hbBotones.setAlignment(Pos.BOTTOM_RIGHT);
 	hbBotones.getChildren().addAll(limpia, grafica, svg);
 	grid.add(hbBotones, 0, 5, 4, 1);
 
-	Text actiontarget = new Text();
+	final Text actiontarget = new Text();
 	actiontarget.setFill(Color.FIREBRICK);
 	grid.add(actiontarget, 0, 6, 5, 1);
 
 	svg.setDisable(true);
+	limpia.setDisable(true);
 	
 	campoFx.setOnAction((ActionEvent e) -> {
 		actiontarget.setText("Para graficar presione el botón Graficar.");
@@ -116,40 +119,59 @@ public class GraficadorVista extends Application{
 		campoX1.setText("");
 		campoX2.setText("");
 		campoY1.setText("");
-		campoY2.setText("");
-		gc.setFill(Color.WHITE);
-		gc.setStroke(Color.BLACK);
-		gc.strokeLine(0, 0, 599, 0);
-		gc.strokeLine(0, 399, 599, 399);
-		gc.strokeLine(0, 0, 0, 399);
-		gc.strokeLine(599, 0, 599, 399);
-		gc.strokeLine(0, 199, 599, 199);
-		gc.strokeLine(299, 0, 299, 399);
+		campoY2.setText("");	
 		controlador.limpia();
+		canvasInicio();
 		svg.setDisable(true);
+		grafica.setDisable(false);
+		limpia.setDisable(true);
+	    });
+
+	colorPicker.setOnAction((ActionEvent e) -> {
+		gc.setStroke(colorPicker.getValue());
 	    });
 	
 	grafica.setOnAction((ActionEvent e) -> {
 		try{
-		    gc.setStroke(Color.RED);
+		    actiontarget.setText("");
 		    controlador.setFuncion(campoFx.getText());
 		    controlador.setGraphicsContext(gc);
+		    double alto = Double.parseDouble(campoAlto.getText());
+		    double ancho = Double.parseDouble(campoAncho.getText());
+		    double x1 = Double.parseDouble(campoX1.getText());
+		    double x2 = Double.parseDouble(campoX2.getText());
+		    double y1 = Double.parseDouble(campoY1.getText());
+		    double y2 = Double.parseDouble(campoY2.getText());
+		    alto = (alto > 400.0) ? alto : 400.0;
+		    ancho = (ancho > 600.0) ? ancho : 600.0;
+		    canvas.setHeight(alto);
+		    canvas.setWidth(ancho);
+		    gc.setFill(Color.WHITE);
+		    gc.fillRect(0.0, 0.0, ancho, alto);
+		    gc.setStroke(Color.BLACK);
+		    gc.strokeLine(0.0, 0.0, ancho, 0.0);
+		    gc.strokeLine(0.0, alto, ancho, alto);
+		    gc.strokeLine(0.0, 0.0, 0.0, alto);
+		    gc.strokeLine(ancho, 0.0, ancho, alto);
 		    controlador.graficaFuncion(
-			       Double.parseDouble(campoAncho.getText()),
-			       Double.parseDouble(campoAlto.getText()),
-			       Double.parseDouble(campoX1.getText()),
-			       Double.parseDouble(campoX2.getText()),
-			       Double.parseDouble(campoY1.getText()),
-			       Double.parseDouble(campoY2.getText()));
+			       ancho,
+			       alto,
+			       x1,
+			       x2,
+			       y1,
+			       y2);
+		    gc.setStroke(colorPicker.getValue());
 		    gc.stroke();
 		    svg.setDisable(false);
+		    grafica.setDisable(true);
+		    limpia.setDisable(false);
 		}catch(Exception ex){
-		    actiontarget.setText(ex.getMessage() + ex.getClass().toString());
-		    ex.printStackTrace();
+		    actiontarget.setText(ex.getMessage());
 		}
 	    });
 	
 	svg.setOnAction((ActionEvent e) -> {
+		actiontarget.setText("");
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Guardar");
 		fc.setInitialFileName(campoFx.getText()+".svg");
@@ -171,10 +193,22 @@ public class GraficadorVista extends Application{
 	
 	Scene scene = new Scene(grid);
 	primaryStage.setScene(scene);
-
+	
 	primaryStage.show();
     }
 
+    private void canvasInicio(){
+	canvas.setHeight(400);
+	canvas.setWidth(600);
+	gc.setFill(Color.WHITE);
+	gc.fillRect(0.0, 0.0, 600.0, 400.0);
+	gc.setStroke(Color.BLACK);
+	gc.strokeLine(0, 0, 600, 0);
+	gc.strokeLine(0, 400, 600, 400);
+	gc.strokeLine(0, 0, 0, 400);
+	gc.strokeLine(600, 0, 600, 400);
+    }
+    
     public static void main(String[] args){
 	launch(args);
     }

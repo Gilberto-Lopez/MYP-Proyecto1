@@ -2,3 +2,9 @@
 **/*~
 
 **/#*#
+
+#Directorio build
+build/
+
+#proyecto1.jar
+proyecto1.jar
