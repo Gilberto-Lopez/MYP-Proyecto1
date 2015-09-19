@@ -20,7 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ColorPicker;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
@@ -32,8 +32,8 @@ import javafx.beans.value.ObservableValue;
 public class GraficadorVista extends Application{
 
     private GraficadorControlador controlador = new GraficadorControlador();
-    private Canvas canvas = new Canvas(600,400);
-    private GraphicsContext gc = canvas.getGraphicsContext2D();
+    private Canvas canvas;
+    private GraphicsContext gc;
     private TextField campoFx = new TextField();
     private TextField campoAncho = new TextField();
     private TextField campoAlto = new TextField();
@@ -49,6 +49,12 @@ public class GraficadorVista extends Application{
     @Override public void start(Stage primaryStage){	
 	primaryStage.setTitle("Graficador");
 
+	canvasInicio();
+	
+	ScrollPane sp = new ScrollPane();
+	sp.setFitToHeight(true);
+	sp.setFitToWidth(true);
+	
 	GridPane grid = new GridPane();
 	grid.setAlignment(Pos.CENTER);
 	grid.setHgap(10);
@@ -56,6 +62,7 @@ public class GraficadorVista extends Application{
 	grid.setPadding(new Insets(10, 10, 10, 10));
 	
 	canvasInicio();
+	
 	grid.add(canvas, 0, 0, 5, 1);
 	
 	final Label efx = new Label("f(x) = ");
@@ -121,10 +128,13 @@ public class GraficadorVista extends Application{
 		campoY1.setText("");
 		campoY2.setText("");	
 		controlador.limpia();
+		grid.getChildren().remove(canvas);
 		canvasInicio();
+		grid.add(canvas, 0, 0, 5, 1);
 		svg.setDisable(true);
 		grafica.setDisable(false);
 		limpia.setDisable(true);
+		primaryStage.sizeToScene();
 	    });
 
 	colorPicker.setOnAction((ActionEvent e) -> {
@@ -142,6 +152,16 @@ public class GraficadorVista extends Application{
 		    double x2 = Double.parseDouble(campoX2.getText());
 		    double y1 = Double.parseDouble(campoY1.getText());
 		    double y2 = Double.parseDouble(campoY2.getText());
+		    if(x1 > x2){
+			double tmp = x1;
+			x1 = x2;
+			x2 = tmp;
+		    }
+		    if(y1 > y2){
+			double tmp = y1;
+			y1 = y2;
+			y2 = tmp;
+		    }
 		    alto = (alto > 400.0) ? alto : 400.0;
 		    ancho = (ancho > 600.0) ? ancho : 600.0;
 		    canvas.setHeight(alto);
@@ -153,18 +173,13 @@ public class GraficadorVista extends Application{
 		    gc.strokeLine(0.0, alto, ancho, alto);
 		    gc.strokeLine(0.0, 0.0, 0.0, alto);
 		    gc.strokeLine(ancho, 0.0, ancho, alto);
-		    controlador.graficaFuncion(
-			       ancho,
-			       alto,
-			       x1,
-			       x2,
-			       y1,
-			       y2);
+		    controlador.graficaFuncion(ancho, alto, x1, x2, y1, y2);
 		    gc.setStroke(colorPicker.getValue());
 		    gc.stroke();
 		    svg.setDisable(false);
 		    grafica.setDisable(true);
 		    limpia.setDisable(false);
+		    primaryStage.sizeToScene();
 		}catch(Exception ex){
 		    actiontarget.setText(ex.getMessage());
 		}
@@ -184,16 +199,20 @@ public class GraficadorVista extends Application{
 		    }
 		}
 	    });
-	
-	Scene scene = new Scene(grid);
+
+
+	sp.setContent(grid);
+
+	Scene scene = new Scene(sp);
 	primaryStage.setScene(scene);
-	
+	primaryStage.setMinWidth(700);
+
 	primaryStage.show();
     }
 
     private void canvasInicio(){
-	canvas.setHeight(400);
-	canvas.setWidth(600);
+	canvas = new Canvas(600, 400);
+	gc = canvas.getGraphicsContext2D();
 	gc.setFill(Color.WHITE);
 	gc.fillRect(0.0, 0.0, 600.0, 400.0);
 	gc.setStroke(Color.BLACK);
@@ -202,7 +221,7 @@ public class GraficadorVista extends Application{
 	gc.strokeLine(0, 0, 0, 400);
 	gc.strokeLine(600, 0, 600, 400);
     }
-    
+
     public static void main(String[] args){
 	launch(args);
     }
