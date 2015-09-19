@@ -62,7 +62,7 @@ public class GraficaSvg{
 		"' y1='" + 0 +
 		"' x2='" + ceroX +
 		"' y2='" + (alto - 1) +
-		"' style='stroke:black;stroke-width:2' />\n";
+		"' style='stroke:black;stroke-width:1' />\n";
 	}
 	if(y1 < 0 && y2 > 0){ //eje x
 	    ceroY = -y2/dy;
@@ -70,13 +70,13 @@ public class GraficaSvg{
 		"' y1='" + ceroY +
 		"' x2='" + (ancho - 1) +
 		"' y2='" + ceroY +
-		"' style='stroke:black;stroke-width:2' />\n";
+		"' style='stroke:black;stroke-width:1' />\n";
 	}
 	Iterator<double[]> iterador = puntos.iterator();
 	int i = 0;
 	while(iterador.hasNext()){
 	    double[] p = iterador.next();
-	    if(i == 0)
+	    if(i == 0 && !Double.isNaN(p[1]))
 		SVGpath += "M " + String.valueOf(i) + " " +
 		    String.valueOf(ceroY+p[1]/dy) + " ";
 	    if(Double.isNaN(p[1]) || Double.isInfinite(p[1])){
@@ -84,6 +84,7 @@ public class GraficaSvg{
 		    p = iterador.next();
 		    i++;
 		}
+		p = iterador.next();
 		SVGpath += "M " + String.valueOf(i) + " " +
 		    String.valueOf(ceroY+p[1]/dy) + " ";
 	    }else{
@@ -120,7 +121,7 @@ public class GraficaSvg{
 	    "<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='"
 	    + alto + "' width='"+ ancho + "'>\n<g>\n"
 	    + ejes
-	    + "<path fill='none' stroke='red' stroke-width='3' d='"
+	    + "<path fill='none' stroke='red' stroke-width='1' d='"
 	    + SVGpath
 	    + "' />\n"
 	    + "</g>\n</svg>";

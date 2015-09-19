@@ -206,7 +206,8 @@ public class GraficadorVista extends Application{
 	Scene scene = new Scene(sp);
 	primaryStage.setScene(scene);
 	primaryStage.setMinWidth(700);
-
+	primaryStage.setResizable(true);
+	
 	primaryStage.show();
     }
 
