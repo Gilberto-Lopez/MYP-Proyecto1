@@ -44,6 +44,7 @@ public class GraficadorVista extends Application{
     private Button limpia = new Button("Limpia");
     private Button grafica = new Button("Graficar");
     private Button svg = new Button("SVG");
+    private Button salir = new Button("Salir");
     private ColorPicker colorPicker = new ColorPicker(Color.RED);
     
     @Override public void start(Stage primaryStage){	
@@ -104,7 +105,7 @@ public class GraficadorVista extends Application{
 
 	HBox hbBotones = new HBox(20);
 	hbBotones.setAlignment(Pos.BOTTOM_RIGHT);
-	hbBotones.getChildren().addAll(limpia, grafica, svg);
+	hbBotones.getChildren().addAll(limpia, grafica, svg, salir);
 	grid.add(hbBotones, 0, 5, 4, 1);
 
 	final Text actiontarget = new Text();
@@ -134,7 +135,6 @@ public class GraficadorVista extends Application{
 		svg.setDisable(true);
 		grafica.setDisable(false);
 		limpia.setDisable(true);
-		primaryStage.sizeToScene();
 	    });
 
 	colorPicker.setOnAction((ActionEvent e) -> {
@@ -179,7 +179,6 @@ public class GraficadorVista extends Application{
 		    svg.setDisable(false);
 		    grafica.setDisable(true);
 		    limpia.setDisable(false);
-		    primaryStage.sizeToScene();
 		}catch(Exception ex){
 		    actiontarget.setText(ex.getMessage());
 		}
@@ -200,13 +199,16 @@ public class GraficadorVista extends Application{
 		}
 	    });
 
+	salir.setOnAction((ActionEvent e) -> {
+		primaryStage.close();
+	    });
 
 	sp.setContent(grid);
 
 	Scene scene = new Scene(sp);
 	primaryStage.setScene(scene);
 	primaryStage.setMinWidth(700);
-	primaryStage.setResizable(true);
+	primaryStage.setFullScreen(true);
 	
 	primaryStage.show();
     }
