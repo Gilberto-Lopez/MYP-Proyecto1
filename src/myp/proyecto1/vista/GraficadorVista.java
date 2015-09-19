@@ -178,13 +178,7 @@ public class GraficadorVista extends Application{
 		File file = fc.showSaveDialog(primaryStage);
 		if(file != null){
 		    try{
-			controlador.generaSvg(file,
-			       Double.parseDouble(campoAncho.getText()),
-			       Double.parseDouble(campoAlto.getText()),
-			       Double.parseDouble(campoX1.getText()),
-			       Double.parseDouble(campoX2.getText()),
-			       Double.parseDouble(campoY1.getText()),
-			       Double.parseDouble(campoY2.getText()));
+			controlador.generaSvg(file);
 		    }catch(Exception ex){
 			actiontarget.setText("Hubo un error al generar el SVG, inténtelo de nuevo.");
 		    }
